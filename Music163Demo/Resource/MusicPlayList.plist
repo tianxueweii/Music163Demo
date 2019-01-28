@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>Remake</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=794080.mp3</string>
+		<key>Author</key>
+		<string>ONE OK ROCK</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/IKv7icE7P37-f652fVscSg==/875211255709986.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Sing for the moment</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=1299919.mp3</string>
+		<key>Author</key>
+		<string>Eminem</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/3rNsgVDWHH06KE5EvYhnxw==/1720735697469859.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>The Bigest Dream</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=536817.mp3</string>
+		<key>Author</key>
+		<string>和田光司</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/I7osbyAjcyrLnNrXytQk-Q==/579442627850015.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>假装</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=504835560.mp3</string>
+		<key>Author</key>
+		<string>陈雪凝</string>
+		<key>CoverURL</key>
+		<string>http://p3.music.126.net/LLI28TeCfNBo6DK1Ct1k4Q==/109951163249809425.jpg?param=120y120</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>RISE</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=1313107065.mp3</string>
+		<key>Author</key>
+		<string>Mako</string>
+		<key>CoverURL</key>
+		<string>http://p3.music.126.net/XLulJwVbfowNQhATCt809g==/109951163573081067.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Love the way you lie</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=1297841.mp3</string>
+		<key>Author</key>
+		<string>Eminem</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/SZ9qKspzceo1XrvxUi5mSw==/831230790642200.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>秋酿</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=30635613.mp3</string>
+		<key>Author</key>
+		<string>房东的猫</string>
+		<key>CoverURL</key>
+		<string>http://p3.music.126.net/XSCmc9ZbWcpeizDya2g6JQ==/18598239185572641.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>津軽海峡・冬景色</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=584011.mp3</string>
+		<key>Author</key>
+		<string>石川小百合</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/IFPeJAIry4rHOA4Op6Jrvg==/18935789253709722.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Listen</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=453176145.mp3</string>
+		<key>Author</key>
+		<string>ONE OK ROCK</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/IKv7icE7P37-f652fVscSg==/875211255709986.jpg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>浪子回头</string>
+		<key>URL</key>
+		<string>http://music.163.com/song/media/outer/url?id=516728102.mp3</string>
+		<key>Author</key>
+		<string>茄子蛋</string>
+		<key>CoverURL</key>
+		<string>http://p4.music.126.net/emWwYFceRZ2plNWgnGUDfg==/109951163333175426.jpg</string>
+	</dict>
+</array>
+</plist>

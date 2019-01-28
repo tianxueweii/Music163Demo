@@ -1,0 +1,23 @@
+//
+//  CMPrefixHeader.pch
+//  Music163Demo
+//
+//  Created by 田学为 on 2019/1/17.
+//  Copyright © 2019年 田学为. All rights reserved.
+//
+
+#ifndef CMPrefixHeader_pch
+#define CMPrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import "CMGlobalMacros.h"
+#import <Masonry.h>
+#import <Aspects.h>
+#import <UIImageView+WebCache.h>
+#import <UIImage+WebP.h>
+#import <SDWebImageDownloader.h>
+#import <XWFoundationExtension.h>
+
+#endif /* CMPrefixHeader_pch */
