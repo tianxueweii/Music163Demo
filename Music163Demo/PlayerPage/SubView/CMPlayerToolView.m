@@ -37,6 +37,10 @@ static UIButton *CMPlayerToolBtn(UIImage *normalImg, UIImage *highlightImg, UIIm
     return self;
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+}
+
 #pragma mark - Render
 
 - (void)viewTemplete {
@@ -103,6 +107,16 @@ static UIButton *CMPlayerToolBtn(UIImage *normalImg, UIImage *highlightImg, UIIm
 - (UIButton *)commentBtn {
     if (!_commentBtn) {
         _commentBtn = CMPlayerToolBtn(UIImage(@"cm2_play_icn_cmt_num"), UIImage(@"cm2_play_icn_cmt_num_prs"), UIImage(@""));
+        // FIXME: 以下代码为mock数据应删除
+        UILabel *demoTitle = [[UILabel alloc] init];
+        demoTitle.text = @"163";
+        demoTitle.font = [UIFont systemFontOfSize:8];
+        demoTitle.textColor = CM_TEXT_COLOR_WHT;
+        [self.commentBtn addSubview:demoTitle];
+        [demoTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(5);
+            make.centerX.mas_equalTo(12);
+        }];
     }
     return _commentBtn;
 }

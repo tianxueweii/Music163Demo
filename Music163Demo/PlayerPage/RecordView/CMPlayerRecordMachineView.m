@@ -25,7 +25,7 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
     animation.autoreverses = NO;
     animation.fillMode = kCAFillModeForwards;
     animation.repeatDuration = INFINITY; // 无限播放
-    animation.removedOnCompletion = NO; 
+    animation.removedOnCompletion = NO;  // 完成时不移除
     
     item.coverImageView.layer.speed = 0.0;
     item.coverImageView.layer.beginTime = 0.0;

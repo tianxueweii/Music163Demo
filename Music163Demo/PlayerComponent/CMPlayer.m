@@ -9,6 +9,7 @@
 #import "CMPlayer.h"
 #import "CMPlayerItem.h"
 #import "CMPlayedStack.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 #define CM_PLAYQUEUE_PREV_SOURCE    0
 #define CM_PLAYQUEUE_PLAYING_SOURCE 1
@@ -40,6 +41,11 @@
         // 创建状态监听
         [self addObserver:self forKeyPath:@"timeControlStatus" options:NSKeyValueObservingOptionNew context:nil];
         [self addPeridodicTimeObserver];
+        [self handleRemoteControlEvent];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleInterreption:)
+                                                     name:AVAudioSessionInterruptionNotification
+                                                   object:[AVAudioSession sharedInstance]];
         [self play];
     }
     return self;
@@ -51,7 +57,7 @@
 }
 
 
-#pragma mark - Interface
+#pragma mark - Play Action Interface
 
 - (void)seekToTime:(CMTime)time toleranceBefore:(CMTime)toleranceBefore toleranceAfter:(CMTime)toleranceAfter {
     [super seekToTime:time toleranceBefore:toleranceBefore toleranceAfter:toleranceAfter];
@@ -130,6 +136,8 @@
     }
 }
 
+#pragma mark - Message Getting
+
 /**
  获取当前播放时长（s）
  */
@@ -155,7 +163,9 @@
     weakDef(self)
     // 避免闪烁，0.01秒后再添加监听
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.timeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMake(1, 2) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+        self.timeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+            // 更新远程播放控制器
+            [weak_self configNowPlayingInfoCenter];
             if ([weak_self.delegate respondsToSelector:@selector(musicPlayerPlayingProgressCurrenSeconds:duration:buffer:)]) {
                 [weak_self.delegate musicPlayerPlayingProgressCurrenSeconds:CMTimeGetSeconds(time) duration:weak_self.currentMusicItem.durationSeconds buffer:weak_self.currentMusicItem.bufferSeconds];
             }
@@ -196,6 +206,11 @@
     }
 }
 
+- (void)handleInterreption:(NSNotification *)noti {
+    // 当发生中断将播放器暂停，暂不做差异化处理
+    [self pause];
+}
+
 
 #pragma mark - Get
 
@@ -230,7 +245,7 @@
     return _playedStack;
 }
 
-#pragma mark - Private Func
+#pragma mark - Orginaze Resources
 
 - (CMPlayerItem *)nextResourceWithPlayingItem:(CMPlayerItem *)item {
     CMPlayerItem *resultItem;
@@ -274,6 +289,7 @@
 }
 
 - (CMPlayerItem *)shuffleResourceWithPlayingItem:(CMPlayerItem *)item {
+    // 获取播放列表
     NSMutableArray *tempArr = [NSMutableArray arrayWithArray:self.playList];
     [tempArr removeObject:item];
     if (!tempArr.count) {
@@ -294,6 +310,65 @@
         default:
             [self next];
             break;
+    }
+}
+
+#pragma mark - Remote Control
+
+- (void)handleRemoteControlEvent {
+    MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+    // 启用播放命令 (锁屏界面和上拉快捷功能菜单处的播放按钮触发的命令)
+    commandCenter.playCommand.enabled = YES;
+    // 为播放命令添加响应事件, 在点击后触发
+    [commandCenter.playCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        [self play];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    // 播放, 暂停, 上下曲的命令默认都是启用状态, 即enabled默认为YES
+    [commandCenter.pauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        //点击了暂停
+        [self pause];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    [commandCenter.previousTrackCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        //点击了上一首
+        [self prev];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    [commandCenter.nextTrackCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        //点击了下一首
+        [self next];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    // 启用耳机的播放/暂停命令 (耳机上的播放按钮触发的命令)
+    commandCenter.togglePlayPauseCommand.enabled = YES;
+    // 为耳机的按钮操作添加相关的响应事件
+    [commandCenter.togglePlayPauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        if (self.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
+            [self pause];
+        } else {
+            [self play];
+        }
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+}
+
+/**
+ 更新远程播放器
+ */
+- (void)configNowPlayingInfoCenter {
+    @autoreleasepool {
+        NSMutableDictionary *nowPlayInfo = [[NSMutableDictionary alloc] init];
+        // 歌曲名称
+        [nowPlayInfo setObject:self.currentMusicItem.musicName forKey:MPMediaItemPropertyTitle];
+        // 演唱者
+        [nowPlayInfo setObject:self.currentMusicItem.musicAuthor forKey:MPMediaItemPropertyArtist];
+        // 音乐剩余时长
+        [nowPlayInfo setObject:@(self.currentMusicItem.durationSeconds) forKey:MPMediaItemPropertyPlaybackDuration];
+        // 音乐当前播放时间
+        [nowPlayInfo setObject:@(self.currentSeconds) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+        
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nowPlayInfo];
     }
 }
 
