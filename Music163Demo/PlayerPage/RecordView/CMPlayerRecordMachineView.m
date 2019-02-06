@@ -90,13 +90,6 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
         make.edges.mas_equalTo(0);
     }];
     
-//    [_needleImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.mas_equalTo(-30);
-//        make.centerX.mas_equalTo(30);
-//        make.centerX.mas_equalTo(0);
-//        make.top.mas_equalTo(-self.needleImageView.)
-//    }];
-    
     [_recordBackgroundCircle mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.recordScrollView.mas_centerX);
         make.centerY.mas_equalTo(self.recordScrollView.mas_centerY).mas_offset(0);
@@ -107,16 +100,14 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
 
 - (void)initRecordItems {
     /**
-     1
-     ↗︎     ⤵︎
+     双链表，playing指针指向播放itemView
+        1
+      ↗︎     ⤵︎
      3    ←   2  ← playing
      */
     _firstRecordItemView = CMPlayerRecordItemViewCreate();
-//        _firstRecordItemView.backgroundColor = UIColor.redColor;
     _secondRecordItemView = CMPlayerRecordItemViewCreate();
-//        _secondRecordItemView.backgroundColor = UIColor.yellowColor;
     _thirdRecordItemView = CMPlayerRecordItemViewCreate();
-//        _thirdRecordItemView.backgroundColor = UIColor.blueColor;
     
     _firstRecordItemView.nextView = _secondRecordItemView;
     _firstRecordItemView.prevView = _thirdRecordItemView;
@@ -241,6 +232,9 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
 #pragma mark - Interface Action
 
 - (void)playAction {
+    if (self.recordScrollView.isDragging || self.recordScrollView.isDecelerating) {
+        return;
+    }
     
     [UIView animateWithDuration:0.35 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.needleImageView.transform = CGAffineTransformIdentity;

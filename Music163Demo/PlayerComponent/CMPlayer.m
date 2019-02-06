@@ -16,10 +16,8 @@
 #define CM_PLAYQUEUE_NEXT_SOURCE    2
 #define CM_PLAYQUEUE_SIZE           3
 
-@interface CMPlayer ()<CMPlayItemDelegate>
+@interface CMPlayer ()
 
-/** 播放列表 */
-@property (nonatomic, strong) NSArray<CMPlayerItem *> *playList;
 /** 播放（过）栈 */
 @property (nonatomic, strong) CMPlayedStack *playedStack;
 /** 播放队列 */
@@ -38,14 +36,23 @@
     if (self) {
         [self setPlayerMode:CMPlayerModeLoop];
         self.playList = playList;
+        
         // 创建状态监听
         [self addObserver:self forKeyPath:@"timeControlStatus" options:NSKeyValueObservingOptionNew context:nil];
+        
         [self addPeridodicTimeObserver];
         [self handleRemoteControlEvent];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleInterreption:)
+                                                 selector:@selector(handleInterreptionNotification:)
                                                      name:AVAudioSessionInterruptionNotification
                                                    object:[AVAudioSession sharedInstance]];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleDidPlayToEndTimeNotification:)
+                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                   object:nil];
+        
         [self play];
     }
     return self;
@@ -179,8 +186,6 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     
-    if (!self.delegate) return;
-    
     if ([keyPath isEqualToString:@"timeControlStatus"]) {
         
         switch (self.timeControlStatus) {
@@ -206,17 +211,13 @@
     }
 }
 
-- (void)handleInterreption:(NSNotification *)noti {
-    // 当发生中断将播放器暂停，暂不做差异化处理
-    [self pause];
-}
 
 
 #pragma mark - Get
 
 - (void)setPlayList:(NSArray<CMPlayerItem *> *)playList {
     _playList = playList;
-    [_playList makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
+//    [_playList makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
     if (_playList.count) {
         [self playedStack];
         [self playQueue];
@@ -299,10 +300,26 @@
     return tempArr[shuffleIdx];
 }
 
-#pragma mark - CMPlayItemDelegate
 
-// 当前item播放结束
-- (void)musicPlayerItemDidPlayToEndTime:(CMPlayerItem *)item {
+#pragma mark - NSNotification
+
+/**
+ 播放中断回调
+ */
+- (void)handleInterreptionNotification:(NSNotification *)noti {
+    if ([noti.userInfo[AVAudioSessionInterruptionTypeKey] integerValue] == AVAudioSessionInterruptionTypeBegan) {
+        // 当发生中断将播放器暂停，暂不做差异化处理
+        [self pause];
+    }
+}
+
+/**
+ 播放完成回调
+ */
+- (void)handleDidPlayToEndTimeNotification:(NSNotification *)noti {
+    if ([self.delegate respondsToSelector:@selector(musicPlayerStatusComplete:musicPlayerItem:)]) {
+        [self.delegate musicPlayerStatusComplete:self musicPlayerItem:self.currentMusicItem];
+    }
     switch (self.playerMode) {
         case CMPlayerModeOne:
             [self replay];
@@ -320,26 +337,15 @@
     // 启用播放命令 (锁屏界面和上拉快捷功能菜单处的播放按钮触发的命令)
     commandCenter.playCommand.enabled = YES;
     // 为播放命令添加响应事件, 在点击后触发
-    [commandCenter.playCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
-        [self play];
-        return MPRemoteCommandHandlerStatusSuccess;
-    }];
+    [commandCenter.playCommand addTarget:self action:@selector(play)];
     // 播放, 暂停, 上下曲的命令默认都是启用状态, 即enabled默认为YES
-    [commandCenter.pauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
-        //点击了暂停
-        [self pause];
-        return MPRemoteCommandHandlerStatusSuccess;
-    }];
-    [commandCenter.previousTrackCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
-        //点击了上一首
-        [self prev];
-        return MPRemoteCommandHandlerStatusSuccess;
-    }];
-    [commandCenter.nextTrackCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
-        //点击了下一首
-        [self next];
-        return MPRemoteCommandHandlerStatusSuccess;
-    }];
+    [commandCenter.pauseCommand addTarget:self action:@selector(pause)];
+    
+    // 上一首
+    [commandCenter.previousTrackCommand addTarget:self action:@selector(prev)];
+    // 下一首
+    [commandCenter.nextTrackCommand addTarget:self action:@selector(next)];
+    
     // 启用耳机的播放/暂停命令 (耳机上的播放按钮触发的命令)
     commandCenter.togglePlayPauseCommand.enabled = YES;
     // 为耳机的按钮操作添加相关的响应事件

@@ -20,8 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)musicPlayerItem:(CMPlayerItem *)item bufferSeconds:(NSTimeInterval)seconds rate:(CGFloat)rate;
 // item状态
 - (void)musicPlayerItem:(CMPlayerItem *)item playItemStatus:(AVPlayerItemStatus)status;
-// 完成播放
-- (void)musicPlayerItemDidPlayToEndTime:(CMPlayerItem *)item;
 
 @end
 

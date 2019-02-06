@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
  封面
  */
 @property (nonatomic, readonly) UIImageView *coverImageView;
-
-
 /**
  下一首唱片视图
  */
@@ -33,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
  重置当前唱片
  */
 - (void)cleanUp;
+
 /**
  根据item渲染当前唱片
 

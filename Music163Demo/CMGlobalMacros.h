@@ -17,8 +17,6 @@
 
 #define CM_DEFAULT_MARGIN_HORIZONTAL 10
 
-//#define __StatusBarHeight [UIApplication sharedApplication].statusBarFrame.size.height
-
 #define CMRatioPx(a) (a * _screenWidth / 375)
 
 #endif /* CMGlobalMacros_h */

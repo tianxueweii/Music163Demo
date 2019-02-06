@@ -38,6 +38,8 @@ typedef NS_ENUM(NSUInteger, CMPlayerMode) {
 - (void)musicPlayerStatusPaused:(CMPlayer *)player musicPlayerItem:(CMPlayerItem *)item;
 // 加载中
 - (void)musicPlayerStatusLoading:(CMPlayer *)player musicPlayerItem:(CMPlayerItem *)item;
+// 播放完成
+- (void)musicPlayerStatusComplete:(CMPlayer *)player musicPlayerItem:(CMPlayerItem *)item;
 
 // 下一首
 - (void)musicPlayerStatusNext:(CMPlayer *)player musicPlayerItem:(CMPlayerItem *)item;
@@ -53,6 +55,12 @@ typedef NS_ENUM(NSUInteger, CMPlayerMode) {
 
 @interface CMPlayer : AVPlayer
 
+/**
+ 初始化播放器
+
+ @param playList 播放列表
+ @return 实例
+ */
 - (instancetype)initWithPlayList:(NSArray<CMPlayerItem *> *)playList;
 
 /**
@@ -65,10 +73,15 @@ typedef NS_ENUM(NSUInteger, CMPlayerMode) {
 @property (nonatomic, weak) id<CMPlayerDelegate> delegate;
 
 #pragma mark -
+
+/**
+ 播放列表
+ */
+@property (nonatomic, strong) NSArray<CMPlayerItem *> *playList;
 /**
  播放队列
  */
-@property (nonatomic, readonly) NSArray *currentPlayingQueue;
+@property (nonatomic, readonly) NSArray<CMPlayerItem *> *currentPlayingQueue;
 /**
  当前播放item
  */

@@ -21,9 +21,13 @@
     [item addObserver:item forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
     [item addObserver:item forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:item selector:@selector(handleDidPlayToEndTimeNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+    
     
     return item;
+}
+
+- (NSString *)description{
+    return [NSString stringWithFormat:@"<%@: %p, name:%@>",[self class], self, _musicName];
 }
 
 - (void)dealloc {
@@ -47,15 +51,6 @@
 }
 
 #pragma mark -
-
-/**
- 播放完成回调
- */
-- (void)handleDidPlayToEndTimeNotification:sender {
-    if ([self.delegate respondsToSelector:@selector(musicPlayerItemDidPlayToEndTime:)]) {
-        [self.delegate musicPlayerItemDidPlayToEndTime:self];
-    }
-}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     
