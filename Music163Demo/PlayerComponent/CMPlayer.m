@@ -334,20 +334,14 @@
 
 - (void)handleRemoteControlEvent {
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
-    // 启用播放命令 (锁屏界面和上拉快捷功能菜单处的播放按钮触发的命令)
-    commandCenter.playCommand.enabled = YES;
-    // 为播放命令添加响应事件, 在点击后触发
+    // 播放
     [commandCenter.playCommand addTarget:self action:@selector(play)];
-    // 播放, 暂停, 上下曲的命令默认都是启用状态, 即enabled默认为YES
+    // 暂停
     [commandCenter.pauseCommand addTarget:self action:@selector(pause)];
-    
     // 上一首
     [commandCenter.previousTrackCommand addTarget:self action:@selector(prev)];
     // 下一首
     [commandCenter.nextTrackCommand addTarget:self action:@selector(next)];
-    
-    // 启用耳机的播放/暂停命令 (耳机上的播放按钮触发的命令)
-    commandCenter.togglePlayPauseCommand.enabled = YES;
     // 为耳机的按钮操作添加相关的响应事件
     [commandCenter.togglePlayPauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
         if (self.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
