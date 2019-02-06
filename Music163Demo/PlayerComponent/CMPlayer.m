@@ -357,19 +357,17 @@
  更新远程播放器
  */
 - (void)configNowPlayingInfoCenter {
-    @autoreleasepool {
-        NSMutableDictionary *nowPlayInfo = [[NSMutableDictionary alloc] init];
-        // 歌曲名称
-        [nowPlayInfo setObject:self.currentMusicItem.musicName forKey:MPMediaItemPropertyTitle];
-        // 演唱者
-        [nowPlayInfo setObject:self.currentMusicItem.musicAuthor forKey:MPMediaItemPropertyArtist];
-        // 音乐剩余时长
-        [nowPlayInfo setObject:@(self.currentMusicItem.durationSeconds) forKey:MPMediaItemPropertyPlaybackDuration];
-        // 音乐当前播放时间
-        [nowPlayInfo setObject:@(self.currentSeconds) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-        
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nowPlayInfo];
-    }
+    NSMutableDictionary *nowPlayInfo = [[NSMutableDictionary alloc] init];
+    // 歌曲名称
+    [nowPlayInfo setObject:self.currentMusicItem.musicName forKey:MPMediaItemPropertyTitle];
+    // 演唱者
+    [nowPlayInfo setObject:self.currentMusicItem.musicAuthor forKey:MPMediaItemPropertyArtist];
+    // 音乐剩余时长
+    [nowPlayInfo setObject:@(self.currentMusicItem.durationSeconds) forKey:MPMediaItemPropertyPlaybackDuration];
+    // 音乐当前播放时间
+    [nowPlayInfo setObject:@(self.currentSeconds) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nowPlayInfo];
 }
 
 @end
