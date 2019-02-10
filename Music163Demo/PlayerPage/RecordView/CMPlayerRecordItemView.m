@@ -75,7 +75,7 @@
 
 - (void)renderRecordCellWithPlayerItem:(CMPlayerItem *)playerItem {
     weakDef(self)
-    [[SDWebImageManager sharedManager] loadImageWithURL:playerItem.musicCoverURL options:SDWebImageLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+    [[SDWebImageManager sharedManager] loadImageWithURL:playerItem.musicCoverURL options:SDWebImageRetryFailed progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
         // 该回调在主线程，调用异步切割图片方法
         [UIImage xw_clipCircleImage:image completion:^(UIImage * _Nonnull img) {
             weak_self.coverImageView.image = img;
