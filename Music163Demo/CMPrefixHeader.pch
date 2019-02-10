@@ -17,7 +17,6 @@
 #import <Aspects.h>
 #import <UIImageView+WebCache.h>
 #import <UIImage+WebP.h>
-#import <SDWebImageDownloader.h>
 #import <XWFoundationExtension.h>
 
 #endif /* CMPrefixHeader_pch */
