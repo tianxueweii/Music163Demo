@@ -207,7 +207,7 @@
 
 - (CMPlayerRecordMachineView *)recordContainerView {
     if (!_recordContainerView) {
-        _recordContainerView = [[CMPlayerRecordMachineView alloc] init];
+        _recordContainerView = [[CMPlayerRecordMachineView alloc] initWithPlayer:self.player];
         _recordContainerView.clipsToBounds = YES;
         weakDef(self)
         _recordContainerView.nextDragActionComp = ^NSArray * _Nonnull{

@@ -9,6 +9,7 @@
 #import "CMPlayerRecordMachineView.h"
 #import "CMPlayerRecordItemView.h"
 #import "CMPlayerRecordMachineView.h"
+#import "CMPlayer.h"
 
 
 #define CMPLAYER_RECORD_COVER_LAYER self.playingRecordItemView.coverImageView.layer
@@ -36,6 +37,8 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
 
 @interface CMPlayerRecordMachineView()<UIScrollViewDelegate>
 
+@property (nonatomic, weak) CMPlayer *player;
+
 @property (nonatomic, strong) UIImageView *needleImageView;
 @property (nonatomic, strong) UIScrollView *recordScrollView;
 @property (nonatomic, strong) UIImageView *recordBackgroundCircle;
@@ -57,9 +60,10 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
 
 @implementation CMPlayerRecordMachineView
 
-- (instancetype)init {
+- (instancetype)initWithPlayer:(CMPlayer *)player {
     self = [super init];
     if (self) {
+        self.player = player;
         [self initRecordItems];
         [self viewTemplete];
         [self configConstraint];
@@ -203,7 +207,9 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
         [self renderRecordItemsWithPlayQueue:self.prevDragActionComp()];
     } else {
         // 当前首
-        [self playAction];
+        if (self.player.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
+            [self playAction];
+        }
     }
 }
 
@@ -218,7 +224,9 @@ static CMPlayerRecordItemView *CMPlayerRecordItemViewCreate() {
             [self renderRecordItemsWithPlayQueue:self.prevDragActionComp()];
         } else {
             // 当前首
-            [self playAction];
+            if (self.player.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
+                [self playAction];
+            }
         }
     }
 }

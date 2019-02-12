@@ -12,9 +12,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class CMPlayer;
+
 typedef NSArray *(^CMPlayerRecordActionBlock)(void);
 
 @interface CMPlayerRecordMachineView : UIView
+
+/**
+ 初始化器
+ */
+- (instancetype)initWithPlayer:(CMPlayer *)player;
+
+#pragma mark -
 
 /**
  拖拽下一首完成
@@ -33,6 +42,8 @@ typedef NSArray *(^CMPlayerRecordActionBlock)(void);
  手动触发上一首
  */
 - (void)prevActionComp:(CMPlayerRecordActionBlock)comp;
+
+#pragma mark -
 
 /**
  播放动画
