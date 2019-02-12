@@ -61,7 +61,7 @@ typedef NS_ENUM(NSUInteger, CMPlayerMode) {
  @param playList 播放列表
  @return 实例
  */
-- (instancetype)initWithPlayList:(NSArray<CMPlayerItem *> *)playList;
+- (instancetype)initWithPlayList:(NSArray<CMPlayerItem *> *)playList NS_DESIGNATED_INITIALIZER;
 
 /**
  播放模式

@@ -49,6 +49,10 @@
                                                    object:[AVAudioSession sharedInstance]];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleRouteChangeNotification:) name:AVAudioSessionRouteChangeNotification
+                                                   object:[AVAudioSession sharedInstance]];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleDidPlayToEndTimeNotification:)
                                                      name:AVPlayerItemDidPlayToEndTimeNotification
                                                    object:nil];
@@ -60,6 +64,7 @@
 
 - (void)dealloc {
     [self removeObserver:self forKeyPath:@"timeControlStatus" context:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self removePeridodicTimeObserver];
 }
 
@@ -304,7 +309,26 @@
 #pragma mark - NSNotification
 
 /**
- 播放中断回调
+ 播放线路切换通知
+ */
+- (void)handleRouteChangeNotification:(NSNotification *)noti {
+    NSDictionary *info = noti.userInfo;
+    AVAudioSessionRouteChangeReason reason = [info[AVAudioSessionRouteChangeReasonKey] unsignedIntegerValue];
+    // 旧设备不可用
+    if (reason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {
+        // 获取线路更换早先设备
+        AVAudioSessionRouteDescription *previousRoute = info[AVAudioSessionRouteChangePreviousRouteKey];
+        AVAudioSessionPortDescription *previousOutput = previousRoute.outputs[0];
+        NSString *portType = previousOutput.portType;
+        // 如果早先设备类型为耳麦
+        if ([portType isEqualToString:AVAudioSessionPortHeadphones]) {
+            [self pause];
+        }
+    }
+}
+
+/**
+ 播放中断通知
  */
 - (void)handleInterreptionNotification:(NSNotification *)noti {
     if ([noti.userInfo[AVAudioSessionInterruptionTypeKey] integerValue] == AVAudioSessionInterruptionTypeBegan) {
@@ -314,7 +338,7 @@
 }
 
 /**
- 播放完成回调
+ 播放完成通知
  */
 - (void)handleDidPlayToEndTimeNotification:(NSNotification *)noti {
     if ([self.delegate respondsToSelector:@selector(musicPlayerStatusComplete:musicPlayerItem:)]) {
